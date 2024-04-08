@@ -2,11 +2,12 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
+// xI AM NOT DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
 use std::vec::*;
+use std::cmp::Ordering;
 
 #[derive(Debug)]
 struct Node<T> {
@@ -29,13 +30,13 @@ struct LinkedList<T> {
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+impl<T: std::cmp::PartialOrd + Clone> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T: std::cmp::PartialOrd + Clone> LinkedList<T> {
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -71,12 +72,87 @@ impl<T> LinkedList<T> {
     }
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
 	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+		let mut res = Self::new();
+    
+        let mut current_a = list_a.start;
+        let mut current_b = list_b.start;
+        
+        while let (Some(node_a), Some(node_b)) = (current_a, current_b) {
+            // if unsafe { (*node_a.as_ptr()).val } <= unsafe { (*node_b.as_ptr()).val } {
+            if unsafe { (*node_a.as_ptr()).val.partial_cmp(&(*node_b.as_ptr()).val) } <= Some(Ordering::Less) {
+                res.add(unsafe { (*node_a.as_ptr()).val.clone() });
+                current_a = unsafe { (*node_a.as_ptr()).next };
+            } else {
+                res.add(unsafe { (*node_b.as_ptr()).val.clone() });
+                current_b = unsafe { (*node_b.as_ptr()).next };
+            }
         }
+        
+        while let Some(node_a) = current_a {
+            res.add(unsafe { (*node_a.as_ptr()).val.clone() });
+            current_a = unsafe { (*node_a.as_ptr()).next };
+        }
+        
+        while let Some(node_b) = current_b {
+            res.add(unsafe { (*node_b.as_ptr()).val.clone() });
+            current_b = unsafe { (*node_b.as_ptr()).next };
+        }
+        
+        res
+        //TODO
+		// let mut res = Self {
+        //     length: 0,
+        //     start: None,
+        //     end: None,
+        // };
+        
+        // // let len_a = list_a.length; 
+        // // let len_b = list_b.length;
+
+        // // let i = 0;
+        // // while i < len_a || i < len_b {
+        // //     if i < len_a {
+        // //         res.add(*list_a.get(i as i32).unwrap());
+        // //     }
+        // //     if i < len_b {
+        // //         res.add(*list_b.get(i as i32).unwrap());
+        // //     }
+        // //     i += 1;
+        // // }
+        // // res
+        // let mut p_a = list_a.start;
+        // let mut p_b = list_b.start;
+        // let mut flag_a = true;
+        // let mut flag_b = true;
+        // while flag_a || flag_b {
+        //     if flag_a {
+        //         let v_a;
+        //         match p_a{
+        //             Some(next_a) =>{
+        //                 // res.add(unsafe { (*next_a.as_ptr()).val });
+        //                 v_a = unsafe { (*next_a.as_ptr()).val };
+        //                 p_a = Some(next_a);
+        //             }
+        //             None =>{
+        //                 flag_a = false;
+        //             }
+        //         }
+        //     }
+
+        //     if flag_b {
+        //         match p_b{
+        //             Some(next_b) =>{
+        //                 res.add(unsafe { ((*next_b.as_ptr()).val)});
+        //                 p_b = Some(next_b);
+        //             }
+        //             None =>{
+        //                 flag_b = false;
+        //             }
+        //         }
+        //     }
+        // }
+
+        // res
 	}
 }
 

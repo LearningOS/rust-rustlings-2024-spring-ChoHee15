@@ -2,7 +2,7 @@
 	double linked list reverse
 	This problem requires you to reverse a doubly linked list
 */
-// I AM NOT DONE
+// xI AM NOT DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -31,13 +31,13 @@ struct LinkedList<T> {
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+impl<T: Clone> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T: Clone> LinkedList<T> {
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -74,6 +74,40 @@ impl<T> LinkedList<T> {
     }
 	pub fn reverse(&mut self){
 		// TODO
+        let mut current = self.start;
+        let mut prev = None;
+    
+        while let Some(mut node_ptr) = current {
+            // let mut node = unsafe { Box::from_raw(node_ptr.as_ptr()) };
+            let mut node = unsafe { node_ptr.as_mut() };
+            // let mut node = (*node_ptr.as_ptr()).clone();
+            // let mut node = unsafe { (*node_b.as_ptr()).val.clone() };
+            let next = node.next;
+    
+            node.prev = next;
+            node.next = prev;
+    
+            prev = Some(node_ptr);
+            current = next;
+        }
+    
+        std::mem::swap(&mut self.start, &mut self.end);
+
+        // let mut vec: Vec<T> = vec![];
+        // let mut current = self.start;
+        // while let Some(node_ptr) = current {
+        //     let mut val = unsafe { (*node_ptr.as_ptr()).val.clone() };
+        //     // let mut node = (*node_ptr.as_ptr()).clone();
+        //     // let mut node = unsafe { (*node_b.as_ptr()).val.clone() };
+        //     vec.push(val);
+        //     current = unsafe { (*node_ptr.as_ptr()).next };
+        // }
+        
+        // let mut res = Self::new();
+        // for i in (0..vec.len()).rev(){
+        //     res.add(vec[i]);
+        // }
+
 	}
 }
 
